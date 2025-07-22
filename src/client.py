@@ -29,7 +29,10 @@ def pre_process_data(data):
             df_processed[col] = 0
     # Reorder columns to match training data
     df_processed = df_processed[expected_columns]
-    return df_processed.values
+    scaler = joblib.load("scaler.joblib")
+    numeric_columns = ['src_port', 'dst_port', 'packet_size', 'duration_ms']
+    df_processed[numeric_columns] = scaler.transform(df_processed[numeric_columns])
+    return df_processed
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.connect((HOST, PORT))
